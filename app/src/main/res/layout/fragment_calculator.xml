@@ -12,14 +12,16 @@
         android:layout_height="wrap_content"
         android:background="#e0e0e0"
         android:gravity="end"
-        android:padding="8dp"
+        android:padding="16dp"
         android:text="0"
         android:textColor="#000000"
         android:textSize="32sp" />
 
     <GridLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
         android:layout_weight="1"
         android:columnCount="4"
         android:padding="8dp"
@@ -28,36 +30,109 @@
         tools:ignore="RtlSymmetry">
 
         <!-- Row 1 -->
-        <Button android:id="@+id/button7" android:text="7" />
-        <Button android:id="@+id/button8" android:text="8" />
-        <Button android:id="@+id/button9" android:text="9" />
-        <Button android:id="@+id/buttonDivide" android:text="/" />
+        <Button
+            android:id="@+id/button7"
+            style="@style/CircularButtonStyle"
+            android:text="7" />
+
+        <Button
+            android:id="@+id/button8"
+            style="@style/CircularButtonStyle"
+            android:text="8" />
+
+        <Button
+            android:id="@+id/button9"
+            style="@style/CircularButtonStyle"
+            android:text="9" />
+
+        <Button
+            android:id="@+id/buttonDivide"
+            style="@style/CircularButtonStyle"
+            android:text="/" />
 
         <!-- Row 2 -->
-        <Button android:id="@+id/button4" android:text="4" />
-        <Button android:id="@+id/button5" android:text="5" />
-        <Button android:id="@+id/button6" android:text="6" />
-        <Button android:id="@+id/buttonMultiply" android:text="*" />
+        <Button
+            android:id="@+id/button4"
+            style="@style/CircularButtonStyle"
+            android:text="4" />
+
+        <Button
+            android:id="@+id/button5"
+            style="@style/CircularButtonStyle"
+            android:text="5" />
+
+        <Button
+            android:id="@+id/button6"
+            style="@style/CircularButtonStyle"
+            android:text="6" />
+
+        <Button
+            android:id="@+id/buttonMultiply"
+            style="@style/CircularButtonStyle"
+            android:text="*" />
 
         <!-- Row 3 -->
-        <Button android:id="@+id/button1" android:text="1" />
-        <Button android:id="@+id/button2" android:text="2" />
-        <Button android:id="@+id/button3" android:text="3" />
-        <Button android:id="@+id/buttonSubtract" android:text="-" />
+        <Button
+            android:id="@+id/button1"
+            style="@style/CircularButtonStyle"
+            android:text="1" />
+
+        <Button
+            android:id="@+id/button2"
+            style="@style/CircularButtonStyle"
+            android:text="2" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/CircularButtonStyle"
+            android:text="3" />
+
+        <Button
+            android:id="@+id/buttonSubtract"
+            style="@style/CircularButtonStyle"
+            android:text="-" />
 
         <!-- Row 4 -->
-        <Button android:id="@+id/buttonClear" android:text="C" />
-        <Button android:id="@+id/button0" android:text="0" />
-        <Button android:id="@+id/buttonEqual" android:text="=" />
-        <Button android:id="@+id/buttonAdd" android:text="+" />
+        <Button
+            android:id="@+id/buttonClear"
+            style="@style/CircularButtonStyle"
+            android:text="C" />
+
+        <Button
+            android:id="@+id/button0"
+            style="@style/CircularButtonStyle"
+            android:text="0" />
+
+        <Button
+            android:id="@+id/buttonEqual"
+            style="@style/CircularButtonStyle"
+            android:text="=" />
+
+        <Button
+            android:id="@+id/buttonAdd"
+            style="@style/CircularButtonStyle"
+            android:text="+" />
 
         <!-- Row 5 -->
-        <Button android:id="@+id/buttonOpenParenthesis" android:text="("
-            android:layout_columnSpan="2"
-            android:layout_gravity="fill_horizontal" />
-        <Button android:id="@+id/buttonCloseParenthesis" android:text=")"
-            android:layout_columnSpan="2"
-            android:layout_gravity="fill_horizontal" />
+        <Button
+            android:id="@+id/buttonOpenParenthesis"
+            style="@style/CircularButtonStyle"
+            android:text="(" />
+
+        <Button
+            android:id="@+id/buttonCloseParenthesis"
+            style="@style/CircularButtonStyle"
+            android:text=")" />
+
+        <Button
+            android:id="@+id/buttonPercent"
+            style="@style/CircularButtonStyle"
+            android:text="%" />
+
+        <Button
+            android:id="@+id/buttonDecimal"
+            style="@style/CircularButtonStyle"
+            android:text="." />
     </GridLayout>
 
 </LinearLayout>

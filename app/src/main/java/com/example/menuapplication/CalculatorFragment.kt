@@ -29,14 +29,15 @@ class CalculatorFragment : Fragment() {
     private fun setupButtons() {
         val operationButtons = setOf(
             binding.buttonAdd, binding.buttonSubtract,
-            binding.buttonMultiply, binding.buttonDivide
+            binding.buttonMultiply, binding.buttonDivide,
+            binding.buttonPercent
         )
 
         val allButtons = listOf(
             binding.button0, binding.button1, binding.button2,
             binding.button3, binding.button4, binding.button5,
             binding.button6, binding.button7, binding.button8,
-            binding.button9,
+            binding.button9, binding.buttonDecimal,
             binding.buttonOpenParenthesis, binding.buttonCloseParenthesis
         ) + operationButtons
 
@@ -44,10 +45,10 @@ class CalculatorFragment : Fragment() {
             button.setOnClickListener {
                 val value = button.text.toString()
                 if (lastCalculation && operationButtons.contains(button)) {
-                    // If the last operation was a calculation and an operator is pressed, do not append
-                    return@setOnClickListener
+                    currentInput.clear()
+                    lastCalculation = false
                 }
-                appendToInput(value, operationButtons.contains(button))
+                appendToInput(value, operationButtons.contains(button) || value == ".")
             }
         }
     }
@@ -55,8 +56,8 @@ class CalculatorFragment : Fragment() {
     private fun appendToInput(str: String, isOperation: Boolean) {
         if (isOperation && currentInput.isNotEmpty()) {
             val lastChar = currentInput.last()
-            if (lastChar in listOf('+', '-', '*', '/')) {
-                return  // Avoid adding an operator if the last char is already an operator
+            if (lastChar in listOf('+', '-', '*', '/', '.') || (str == "." && currentInput.contains("."))) {
+                return  // Avoid adding an operator or extra decimal if not appropriate
             }
         }
         if (lastCalculation && !isOperation) {
@@ -72,9 +73,17 @@ class CalculatorFragment : Fragment() {
             try {
                 val expression = ExpressionBuilder(currentInput.toString()).build()
                 val result = expression.evaluate()
+
+                // Check if the result is an integer
+                val resultText = if (result % 1.0 == 0.0) {
+                    result.toInt().toString()  // Convert to integer string if no decimal part
+                } else {
+                    result.toString()  // Keep as is if there's a decimal part
+                }
+
                 currentInput.clear()
-                currentInput.append(result.toString())
-                updateDisplay(result.toString())
+                currentInput.append(resultText)
+                updateDisplay(resultText)
                 lastCalculation = true
             } catch (e: Exception) {
                 updateDisplay("Error")
@@ -82,6 +91,7 @@ class CalculatorFragment : Fragment() {
             }
         }
     }
+
 
     private fun clearInput() {
         currentInput.clear()
