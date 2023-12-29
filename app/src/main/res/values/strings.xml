@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Menu Application</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="menu_items">
+        <item>List Bluetooth Devices</item>
+        <item>Calculator</item>
+        <item>Memory Info</item>
+    </string-array>
+
 </resources>
