@@ -5,6 +5,8 @@
     android:background="#f0f0f0">
 
     <ListView
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/darker_gray"
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

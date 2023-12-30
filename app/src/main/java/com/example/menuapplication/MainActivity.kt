@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val menuItems = resources.getStringArray(R.array.menu_items)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, menuItems)
+        val adapter = ArrayAdapter(this, R.layout.list_item_black_text, menuItems)
         val listView = binding.listView
         listView.adapter = adapter
         listView.setOnItemClickListener { _, _, position, _ ->
