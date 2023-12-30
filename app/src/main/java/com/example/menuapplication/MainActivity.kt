@@ -30,6 +30,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateToFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
+
+        // Clear the back stack
+        val backStackCount = fragmentManager.backStackEntryCount
+        for (i in 0 until backStackCount) {
+            fragmentManager.popBackStackImmediate()
+        }
+
+        // Replace with the new fragment
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(binding.fragmentContainer.id, fragment)
         fragmentTransaction.addToBackStack(null)

@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.menuapplication.databinding.FragmentBluetoothBinding
@@ -32,6 +33,7 @@ class BluetoothFragment : Fragment() {
     }
     private val devicesList = arrayListOf<String>()
     private lateinit var arrayAdapter: ArrayAdapter<String>
+
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val granted = permissions.entries.all { it.value }
@@ -48,15 +50,26 @@ class BluetoothFragment : Fragment() {
             }
         }
 
-    // New Activity Result API
-    private val requestBluetoothEnable =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                checkPermissionsAndStartDiscovery()
-            } else {
-                Toast.makeText(context, "Bluetooth not enabled", Toast.LENGTH_SHORT).show()
+    private val requestMultiplePermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            permissions.entries.forEach {
+                Log.d("test006", "${it.key} = ${it.value}")
+                // Permission denied
             }
         }
+
+    private val requestBluetooth =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Bluetooth Admin permission granted
+                // Proceed with Bluetooth operations
+                checkPermissionsAndStartDiscovery()
+            } else {
+                Toast.makeText(context, "Bluetooth Admin permission denied", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,8 +97,20 @@ class BluetoothFragment : Fragment() {
         }
 
         if (!localBluetoothAdapter.isEnabled) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            requestBluetoothEnable.launch(enableBtIntent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Android 12+
+                requestMultiplePermissions.launch(
+                    arrayOf(
+                        Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    )
+                )
+                requestBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+            } else {
+                // Prior to Android 12
+                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                requestBluetooth.launch(enableBtIntent)
+            }
         } else {
             checkPermissionsAndStartDiscovery()
         }
@@ -133,7 +158,7 @@ class BluetoothFragment : Fragment() {
                 addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
             }
             requireContext().registerReceiver(receiver, filter)
-            Log.d("BluetoothFragment", "Starting Bluetooth discovery")
+            Log.d("BluetoothFragment", "Starting Bluetooth discovery startDiscovery")
             bluetoothAdapter?.startDiscovery()
             binding.progressBar.visibility = View.VISIBLE
             binding.listBluetoothDevices.visibility = View.GONE
@@ -141,7 +166,9 @@ class BluetoothFragment : Fragment() {
     }
 
     private val receiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.S)
         override fun onReceive(context: Context, intent: Intent) {
+            Log.d("BluetoothFragment", "onReceive")
             when (intent.action) {
                 BluetoothDevice.ACTION_FOUND -> {
                     val device: BluetoothDevice? =
@@ -155,14 +182,15 @@ class BluetoothFragment : Fragment() {
                             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                         }
                     Log.d("BluetoothFragment", "Device found: ${device?.name}")
-
-                    if (device != null && ActivityCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.BLUETOOTH_CONNECT
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
+                    Log.d("BluetoothFragment", (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) == PackageManager.PERMISSION_GRANTED).toString())
+                    if (device != null) {
                         val deviceName = device.name ?: "Unknown Device"
+                        Log.d("BluetoothFragment2", deviceName)
                         devicesList.add("$deviceName\n${device.address}")
+                        Log.d("BluetoothFragment2", devicesList.toString())
                         arrayAdapter.notifyDataSetChanged()
                     }
                 }
@@ -178,7 +206,24 @@ class BluetoothFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        context?.unregisterReceiver(receiver)
+        if (isReceiverRegistered) {
+            context?.unregisterReceiver(receiver)
+        }
     }
+
+    private val isReceiverRegistered: Boolean
+        get() {
+            // Check if the receiver is registered before unregistering it
+            return try {
+                val filter = IntentFilter().apply {
+                    addAction(BluetoothDevice.ACTION_FOUND)
+                    addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+                }
+                context?.registerReceiver(receiver, filter)
+                true // Receiver was registered
+            } catch (e: IllegalArgumentException) {
+                false // Receiver was not registered
+            }
+        }
 
 }
