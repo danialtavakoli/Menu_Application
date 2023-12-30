@@ -2,7 +2,7 @@
 Your all-in-one Android companion for Bluetooth connectivity, quick calculations, and memory management.
 
 ## How to use?
-Build & install or [Get .APK](https://github.com/danialtavakoli/Menu_Application/blob/master/apk/Menu%20Application.apk)
+Build & install or [Get .APK](https://github.com/danialtavakoli/Menu_Application/blob/master/apk/Menu_Application.apk)
 
 ## Screenshots:
 <p float="left">
